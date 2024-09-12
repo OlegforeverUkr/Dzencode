@@ -6,8 +6,7 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.8/dist/umd/popper.min.js" integrity="sha384-I7E8VVD/ismYTF4hNIPjVp/Zjvgyol6VFvRkX/vR+Vc4jQkC+hVqc2pM8ODewa9r" crossorigin="anonymous"></script>
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.min.js" integrity="sha384-0pUGZvbkm6XF6gxjEnlmuGrJXVbNuzT9qBBavbLwCsOGabYfZo0T0to5eqruptLy" crossorigin="anonymous"></script>
+
     <link rel="stylesheet" href="{% static "css/bootstrap/bootstrap.min.css" %}">
     <link rel="stylesheet" href="{% static "css/my_css.css" %}">
     <link rel="stylesheet" href="{% static "css/my_footer_css.css" %}">
@@ -17,7 +16,7 @@
     <header>
         <nav class="navbar navbar-expand-lg bg-dark" data-bs-theme="dark">
             <div class="container">
-                <a class="navbar-brand" href="#">Home</a>
+                <a class="navbar-brand" href="{% url 'users:main' %}">Home</a>
                 <button class="navbar-toggler" type="button" data-bs-toggle="collapse"
                     data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent"
                     aria-expanded="false" aria-label="Toggle navigation">
@@ -27,17 +26,17 @@
                     <ul class="navbar-nav me-auto mb-2 mb-lg-0">
                         {% if not user.is_authenticated %}
                             <li class="nav-item">
-                                <a class="nav-link  text-white" href="#">Войти</a>
+                                <a class="nav-link  text-white" href="{% url 'users:login' %}">Войти</a>
                             </li>
                             <li class="nav-item">
-                                <a class="nav-link  text-white" href="#">Регистрация</a>
+                                <a class="nav-link  text-white" href="{% url 'users:registration' %}">Регистрация</a>
                             </li>
                         {% else %}
-                            <li class="nav-item dropdown ">
-                                <a class="nav-link dropdown-toggle text-white" href="#" role="button"
-                                    data-bs-toggle="dropdown" aria-expanded="false">
-                                    Мой профиль
-                                </a>
+                            <li class="nav-item">
+                                <a class="nav-link  text-white" href="{% url 'users:profile' %}">Профиль</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link  text-white" href="{% url 'users:logout' %}">Выйти</a>
                             </li>
                         {% endif %}
                     </ul>
@@ -49,14 +48,17 @@
             </div>
         </nav>
     </header>
+    {% include "notifications.html" %}
 
     {% block content %}
     {% endblock %}
 
-    <footer class="py-4 bg-dark">
-        <div class="container">
-            <p class="m-0 text-center text-white">Copyright &copy; Dzencode</p>
-        </div>
-    </footer>
+
+    {% block footer %}
+    {% endblock footer %}
+    <script src="{% static "js/jquery/jquery-3.7.0.min.js" %}"></script>
+    <script src="{% static "js/jquery-ajax.js" %}"></script>
+    <script src="{% static "js/bootstrap/bootstrap.bundle.min.js" %}"></script>
+    <script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-element-bundle.min.js"></script>
 </body>
 </html>

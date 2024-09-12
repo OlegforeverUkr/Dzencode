@@ -3,7 +3,7 @@ from PIL import Image
 
 
 def get_path_upload_avatar(instance, file):
-    return f"media/avatar/{instance.id}/{file}"
+    return f"avatar/{instance.id}/{file}"
 
 
 def validate_size_upload_textfile(file):

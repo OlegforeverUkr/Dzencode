@@ -1,0 +1,42 @@
+{% extends "base.html" %}
+{% load static %}
+
+
+{% block content %}
+
+<div class="container">
+    <div class="row mt-1">
+        <div class="col-lg-1">
+        </div>
+        <div class="col-lg-10">
+            <div class="row">
+                <div class="container mt-5">
+                    <div class="row justify-content-center">
+                        <div class="col-md-10 bg-white p-4 mb-4 mx-3 rounded custom-shadow">
+                            <h2 class="text-center mb-4">Авторизация</h2>
+
+                            <form action="{% url "users:login" %}" method="post">
+                                {% csrf_token %}
+                                {{ form.as_p }}
+                                <button type="submit" 
+                                    class="btn btn-dark btn-block">Войти</button>
+                            </form>
+
+                            <hr>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% endblock content %}
+
+{% block footer %}
+<footer class="py-4 bg-dark">
+    <div class="container">
+        <p class="m-0 text-center text-white">Copyright &copy; Dzencode</p>
+    </div>
+</footer>
+{% endblock footer %}
