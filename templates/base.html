@@ -1,0 +1,64 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <link rel="stylesheet" href="{% static "css/bootstrap/bootstrap.min.css" %}">
+    <link rel="stylesheet" href="{% static "css/my_css.css" %}">
+    <link rel="stylesheet" href="{% static "css/my_footer_css.css" %}">
+    <title>{{ title }}</title>
+</head>
+<body>
+    <header>
+        <nav class="navbar navbar-expand-lg bg-dark" data-bs-theme="dark">
+            <div class="container">
+                <a class="navbar-brand" href="{% url 'users:main' %}">Home</a>
+                <button class="navbar-toggler" type="button" data-bs-toggle="collapse"
+                    data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent"
+                    aria-expanded="false" aria-label="Toggle navigation">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+                <div class="collapse navbar-collapse" id="navbarSupportedContent">
+                    <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+                        {% if not user.is_authenticated %}
+                            <li class="nav-item">
+                                <a class="nav-link  text-white" href="{% url 'users:login' %}">Войти</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link  text-white" href="{% url 'users:registration' %}">Регистрация</a>
+                            </li>
+                        {% else %}
+                            <li class="nav-item">
+                                <a class="nav-link  text-white" href="{% url 'users:profile' %}">Профиль</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link  text-white" href="{% url 'users:logout' %}">Выйти</a>
+                            </li>
+                        {% endif %}
+                    </ul>
+                    <form class="d-flex" role="search" action="#" method="get">
+                        <input class="form-control me-2" type="search" name="q" placeholder="Search" aria-label="Search">
+                        <button class="btn btn-outline-success text-white" type="submit">Поиск</button>
+                    </form>
+                </div>
+            </div>
+        </nav>
+    </header>
+    {% include "notifications.html" %}
+
+    {% block content %}
+    {% endblock %}
+
+
+    {% block footer %}
+    {% endblock footer %}
+    <script src="{% static "js/jquery/jquery-3.7.0.min.js" %}"></script>
+    <script src="{% static "js/jquery-ajax.js" %}"></script>
+    <script src="{% static "js/bootstrap/bootstrap.bundle.min.js" %}"></script>
+    <script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-element-bundle.min.js"></script>
+</body>
+</html>
