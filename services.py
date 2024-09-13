@@ -9,11 +9,11 @@ def get_path_upload_avatar(instance, file):
 
 
 def get_path_upload_textfile(instance, file):
-    return f"textfile/{instance.id}/{file}"
+    return f"textfile/{instance.post_id}/{file}"
 
 
 def get_path_upload_comments_images(instance, file):
-    return f"comments_images/{instance.id}/{file}"
+    return f"comments_images/{instance.post_id}/{file}"
     
 
 def validate_avatar(image):
@@ -37,19 +37,23 @@ def validate_size_upload_textfile(file):
     
 
 def validate_upload_comments_images(image):
-    max_height = 320
-    max_width = 240
+    fixed_width = 240
 
     img = Image.open(image)
     
     if img.format.lower() not in ['jpg', 'jpeg', 'png']:
         raise ValidationError("Допустимые форматы изображений: JPG, JPEG, PNG")
 
-    if img.height > max_height or img.width > max_width:
-        img.tumbnail((max_height, max_width))
-        
-        img_io = BytesIO()
-        img.save(img_io, format=img.format)
-        image = InMemoryUploadedFile(img_io, 'ImageField', image.name, image.content_type, img_io.getbuffer().nbytes, None)
 
-    return image
+    width_percent = (fixed_width / float(img.size[0]))
+    height_size = int((float(img.size[1]) * float(width_percent)))
+    
+    new_image = img.resize((fixed_width, height_size), Image.LANCZOS)
+
+    output = BytesIO()
+    new_image.save(output, format=img.format)
+    output.seek(0)
+    
+    image_file = InMemoryUploadedFile(output, 'ImageField', image.name, 'image/jpeg', output.tell(), None)
+    
+    return image_file

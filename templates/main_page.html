@@ -1,0 +1,82 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block content %}
+<div class="container">
+    <div class="row justify-content-center">
+
+        <div class="dropdown mb-2">
+            <button class="btn btn-secondary dropdown-toggle btn-dark" type="button" data-bs-toggle="dropdown"
+                aria-expanded="false">
+                Фильтры
+            </button>
+
+            <form action="" method="get" class="dropdown-menu bg-dark" data-bs-theme="dark">
+                <p class="text-white mx-3 mt-3">Сортировать:</p>
+                <div class="form-check text-white mx-3">
+                    <input class="form-check-input" type="radio" name="order_by" id="flexRadioDefault1" value="default" {% if not request.GET.order_by or request.GET.order_by == "default" %}checked{% endif %}>
+                    <label class="form-check-label" for="flexRadioDefault1">
+                        По умолчанию
+                    </label>
+                </div>
+                <div class="form-check text-white mx-3">
+                    <input class="form-check-input" type="radio" name="order_by" id="flexRadioDefault2" value="username" {% if request.GET.order_by == "username" %}checked{% endif %}>
+                    <label class="form-check-label" for="flexRadioDefault2">
+                        По имени пользователя
+                    </label>
+                </div>
+                <div class="form-check text-white mx-3">
+                    <input class="form-check-input" type="radio" name="order_by" id="flexRadioDefault3" value="email" {% if request.GET.order_by == "email" %}checked{% endif %}>
+                    <label class="form-check-label" for="flexRadioDefault3">
+                        По email пользователя
+                    </label>
+                </div>
+                <div class="form-check text-white mx-3">
+                    <input class="form-check-input" type="radio" name="order_by" id="flexRadioDefault2" value="news" {% if request.GET.order_by == "news" %}checked{% endif %}>
+                    <label class="form-check-label" for="flexRadioDefault2">
+                        Сначала новый
+                    </label>
+                </div>
+                <div class="form-check text-white mx-3">
+                    <input class="form-check-input" type="radio" name="order_by" id="flexRadioDefault3" value="oldest" {% if request.GET.order_by == "oldest" %}checked{% endif %}>
+                    <label class="form-check-label" for="flexRadioDefault3">
+                        Сначала старые
+                    </label>
+                </div>
+                <button type="submit" class="btn btn-primary mx-3 mt-3">Применить</button>
+            </form>
+        </div>
+
+        {% if request.GET.q %}
+        <h2 class="font-nosifer mt-5 pt-5 text-center">Результат поиска по запросу "{{ request.GET.q }}"</h2>
+            {% if not all_prod %}
+                <h1 class="font-nosifer mt-5 pt-5 text-center">По запросу ничего не найдено...</h1>
+            {% endif %}
+        {% endif %}
+
+        {% for post in posts %}
+            <div class="col-lg-12 p-4">
+                <div class="card border-primary rounded custom-shadow">
+                    <div class="card-body">
+                        <a href="{% url 'posts:post_detail' post.pk %}">
+                            <h5 class="card-title">{{ post.title }}</h5>
+                        </a>
+                        <p class="card-text text-truncate">{{ post.user.username }}</p>
+                        <p class="card-text text-truncate">{{ post.body }}</p>
+                        <p class="created_at">Создан: {{ post.created_at }}</p>
+                    </div>
+                </div>
+            </div>
+        {% endfor %}
+        
+    </div>
+</div>
+{% endblock content %}
+
+{% block footer %}
+<footer class="py-4 bg-dark">
+    <div class="container">
+        <p class="m-0 text-center text-white">Copyright &copy; Dzencode</p>
+    </div>
+</footer>
+{% endblock footer %}

@@ -31,10 +31,7 @@ class Comment(models.Model):
     post = models.ForeignKey(Post, on_delete=models.CASCADE, related_name='comments')
     user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='comments')
     body = models.TextField()
-    image = models.ImageField(upload_to=get_path_upload_comments_images, 
-                              null=True, 
-                              blank=True,
-                              validators=[validate_upload_comments_images])
+    image = models.ImageField(upload_to=get_path_upload_comments_images, null=True, blank=True)
     file = models.FileField(upload_to=get_path_upload_textfile, 
                             null=True, 
                             blank=True, 
@@ -56,3 +53,9 @@ class Comment(models.Model):
 
     def __str__(self):
         return f"Comment by {self.user} on {self.post}"
+    
+
+    def save(self, *args, **kwargs):
+        if self.image and hasattr(self.image, 'file'):
+            self.image = validate_upload_comments_images(self.image.file)
+        super().save(*args, **kwargs)

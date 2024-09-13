@@ -15,7 +15,7 @@ body {
   box-shadow: 5px 5px 25px 19px #000000;
 }
 
-.product_id {
+.created_at {
   color: gray;
   font-size: 15px;
 }

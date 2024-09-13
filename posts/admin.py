@@ -9,7 +9,6 @@ class PostAdmin(admin.ModelAdmin):
     search_fields = ["user__username", "title"]
     list_filter = ["user", "created_at"]
     fields = ["user", "title", "body"]
-    readonly_fields = ["user"]
 
 
 @admin.register(Comment)
@@ -18,4 +17,3 @@ class CommentAdmin(admin.ModelAdmin):
     search_fields = ["user__username", "post__title"]
     list_filter = ["user", "post", "created_at"]
     fields = [("post", "user"), "body", "image", "file"]
-    readonly_fields = ["post", "user"]
