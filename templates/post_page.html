@@ -7,6 +7,10 @@
         <p>{{ post.body }}</p>
         <p>Автор: {{ post.user.username }}</p>
         <p>Создан: {{ post.created_at }}</p>
+        
+        <div class="post-actions">
+            <a href="" class="btn btn-outline-info">Коментировать</a>
+        </div>
     </div>
 
     <div class="comments-section">
@@ -25,17 +29,21 @@
                     </div>
                 </div>
                 <div class="comment-body">
-                    <p>{{ comment.body }}</p>
+                    <div class="comment-body-content">
+                        <p>{{ comment.body }}</p>
+                        <a href="#" class="btn btn-outline-info">Ответить</a>
+                    </div>
                     {% if comment.image %}
                         <img src="{{ comment.image.url }}" alt="Comment Image" class="comment-image" />
                     {% endif %}
                     {% if comment.file %}
+                        <img src="{% static "file_icon.png" %}" alt="Comment File" class="comment-image" width="80" height="80" />
                         <a href="{{ comment.file.url }}">Скачать файл</a>
                     {% endif %}
                 </div>
             </div>
         {% endfor %}
-
+    
         <!-- Пагинация -->
         <div class="pagination">
             <span class="step-links">
@@ -43,16 +51,19 @@
                     <a href="?page=1">&laquo; начало</a>
                     <a href="?page={{ page_obj.previous_page_number }}">предыдущая</a>
                 {% endif %}
-
+        
                 <span class="current">
                     Страница {{ page_obj.number }} из {{ page_obj.paginator.num_pages }}.
                 </span>
-
+        
                 {% if page_obj.has_next %}
                     <a href="?page={{ page_obj.next_page_number }}">следующая</a>
                     <a href="?page={{ page_obj.paginator.num_pages }}">конец &raquo;</a>
                 {% endif %}
             </span>
         </div>
+        
     </div>
+    
+    
 {% endblock %}
