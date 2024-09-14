@@ -40,7 +40,7 @@
                             </li>
                         {% endif %}
                     </ul>
-                    <form class="d-flex" role="search" action="#" method="get">
+                    <form class="d-flex" role="search" action="{% url "posts:main" %}" method="get">
                         <input class="form-control me-2" type="search" name="q" placeholder="Search" aria-label="Search">
                         <button class="btn btn-outline-success text-white" type="submit">Поиск</button>
                     </form>

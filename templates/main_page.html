@@ -49,7 +49,7 @@
 
         {% if request.GET.q %}
         <h2 class="font-nosifer mt-5 pt-5 text-center">Результат поиска по запросу "{{ request.GET.q }}"</h2>
-            {% if not all_prod %}
+            {% if not posts %}
                 <h1 class="font-nosifer mt-5 pt-5 text-center">По запросу ничего не найдено...</h1>
             {% endif %}
         {% endif %}
@@ -59,10 +59,26 @@
                 <div class="card border-primary rounded custom-shadow">
                     <div class="card-body">
                         <a href="{% url 'posts:post_detail' post.pk %}">
-                            <h5 class="card-title">{{ post.title }}</h5>
+                            <h5 class="card-title">
+                                {% autoescape off %}
+                                    {% if post.headline %}
+                                        {{ post.headline|truncatechars:100 }}
+                                    {% else %}
+                                        {{ post.title|truncatechars:40 }}
+                                    {% endif %}
+                                {% endautoescape %}
+                            </h5>
                         </a>
                         <p class="card-text text-truncate">{{ post.user.username }}</p>
-                        <p class="card-text text-truncate">{{ post.body }}</p>
+                        <p class="card-text text-truncate">
+                            {% autoescape off %}
+                                {% if post.bodyline %}
+                                    {{ post.bodyline }}
+                                {% else %}
+                                    {{ post.body }}
+                                {% endif %}
+                            {% endautoescape %}
+                        </p>
                         <p class="created_at">Создан: {{ post.created_at }}</p>
                     </div>
                 </div>
