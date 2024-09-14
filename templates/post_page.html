@@ -1,35 +1,58 @@
-{% extends "base.html" %}
+{% extends 'base.html' %}
 {% load static %}
 
-
 {% block content %}
-
-    <h2>{{ post.title }}</h2>
-    <p>{{ post.body }}</p>
-    <p>Posted by {{ post.user.username }} on {{ post.created_at }}</p>
-
-    <h3>Comments:</h3>
-    <ul>
-        {% for comment in comments %}
-        <li>
-            <p>{{ comment.text }} - by {{ comment.user.username }} on {{ comment.created_at }}</p>
-            {% if comment.replies %}
-            <ul>
-                {% for reply in comment.replies.all %}
-                <li>{{ reply.text }} - by {{ reply.user.username }} on {{ reply.created_at }}</li>
-                {% endfor %}
-            </ul>
-            {% endif %}
-        </li>
-        {% endfor %}
-    </ul>
-
-{% endblock content %}
-
-{% block footer %}
-<footer class="py-4 bg-dark">
-    <div class="container">
-        <p class="m-0 text-center text-white">Copyright &copy; Dzencode</p>
+    <div class="post-detail">
+        <h1>{{ post.title }}</h1>
+        <p>{{ post.body }}</p>
+        <p>Автор: {{ post.user.username }}</p>
+        <p>Создан: {{ post.created_at }}</p>
     </div>
-</footer>
-{% endblock footer %}
+
+    <div class="comments-section">
+        <h3>Комментарии:</h3>
+        {% for comment in page_obj %}
+            <div class="comment-box">
+                <div class="comment-header">
+                    {% if comment.user.avatar %}
+                        <img src="{{ comment.user.avatar.url }}" alt="Avatar" class="rounded-circle me-2" width="40" height="40">
+                    {% else %}
+                        <img src="{% static "baseavatar.jpg" %}" alt="Avatar" class="rounded-circle me-2" width="40" height="40">
+                    {% endif %}
+                    <div class="comment-info">
+                        <strong>{{ comment.user.username }}</strong>
+                        <span class="comment-date">{{ comment.created_at|date:"d.m.y H:i" }}</span>
+                    </div>
+                </div>
+                <div class="comment-body">
+                    <p>{{ comment.body }}</p>
+                    {% if comment.image %}
+                        <img src="{{ comment.image.url }}" alt="Comment Image" class="comment-image" />
+                    {% endif %}
+                    {% if comment.file %}
+                        <a href="{{ comment.file.url }}">Скачать файл</a>
+                    {% endif %}
+                </div>
+            </div>
+        {% endfor %}
+
+        <!-- Пагинация -->
+        <div class="pagination">
+            <span class="step-links">
+                {% if page_obj.has_previous %}
+                    <a href="?page=1">&laquo; начало</a>
+                    <a href="?page={{ page_obj.previous_page_number }}">предыдущая</a>
+                {% endif %}
+
+                <span class="current">
+                    Страница {{ page_obj.number }} из {{ page_obj.paginator.num_pages }}.
+                </span>
+
+                {% if page_obj.has_next %}
+                    <a href="?page={{ page_obj.next_page_number }}">следующая</a>
+                    <a href="?page={{ page_obj.paginator.num_pages }}">конец &raquo;</a>
+                {% endif %}
+            </span>
+        </div>
+    </div>
+{% endblock %}

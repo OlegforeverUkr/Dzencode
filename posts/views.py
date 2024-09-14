@@ -1,7 +1,7 @@
-from django.shortcuts import render
+from django.core.paginator import Paginator
 from django.views.generic import DetailView, ListView
 
-from posts.models import Post
+from posts.models import Comment, Post
 from posts.search import search_posts
 
 
@@ -41,6 +41,20 @@ class MainView(ListView):
 
 
 class PostView(DetailView):
-    def get(self, request, pk):
-        post = Post.objects.get(pk=pk)
-        return render(request, 'post_page.html', {'post': post, 'title': post.title})
+    model = Post
+    template_name = 'post_page.html'
+    context_object_name = 'post'
+
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        post = self.object
+
+        comments = Comment.objects.filter(post=post).order_by('created_at')
+
+        paginator = Paginator(comments, 25)
+        page_number = self.request.GET.get('page')
+        page_obj = paginator.get_page(page_number)
+
+        context['page_obj'] = page_obj
+        return context
