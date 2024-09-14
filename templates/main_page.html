@@ -1,5 +1,7 @@
 {% extends "base.html" %}
 {% load static %}
+{% load posts_tags %}
+
 
 {% block content %}
 <div class="container">
@@ -56,8 +58,8 @@
 
         {% for post in posts %}
             <div class="col-lg-12 p-4">
-                <div class="card border-primary rounded custom-shadow">
-                    <div class="card-body">
+                <div class="card border-primary rounded custom-shadow custom-card">
+                    <div class="card-body custom-card-body">
                         <a href="{% url 'posts:post_detail' post.pk %}">
                             <h5 class="card-title">
                                 {% autoescape off %}
@@ -69,13 +71,20 @@
                                 {% endautoescape %}
                             </h5>
                         </a>
-                        <p class="card-text text-truncate">{{ post.user.username }}</p>
-                        <p class="card-text text-truncate">
+                        <div class="d-flex align-items-center">
+                            {% if post.user.avatar %}
+                                <img src="{{ post.user.avatar.url }}" alt="Avatar" class="rounded-circle me-2" width="40" height="40">
+                            {% else %}
+                                <img src="{% static "baseavatar.jpg" %}" alt="Avatar" class="rounded-circle me-2" width="40" height="40">
+                            {% endif %}
+                            <p class="card-text mb-0">{{ post.user.username }}</p>
+                        </div>
+                        <p class="card-text">
                             {% autoescape off %}
                                 {% if post.bodyline %}
-                                    {{ post.bodyline }}
+                                    {{ post.bodyline|truncatechars:100 }}
                                 {% else %}
-                                    {{ post.body }}
+                                    {{ post.body|truncatechars:100 }}
                                 {% endif %}
                             {% endautoescape %}
                         </p>
@@ -83,16 +92,39 @@
                     </div>
                 </div>
             </div>
+        
         {% endfor %}
         
     </div>
+
+
+    <!-- Paginator -->
+    {% if posts %}
+    <nav aria-label="Page navigation example">
+        <ul class="pagination justify-content-center my-4">
+            <div class="custom-shadow d-flex">
+
+                <li class="page-item {% if not page_obj.has_previous %}disabled{% endif %}">
+                <a class="page-link" href="{% if page_obj.has_previous %}?{% change_params page=page_obj.previous_page_number %}{% else %}#{% endif %}">Назад</a>
+                </li>
+
+                {% for page in page_obj.paginator.page_range %}
+                    {% if page >= page_obj.number|add:-2 and page <= page_obj.number|add:2 %}
+                        <li class="page-item {% if page_obj.number == page %} active {% endif %}">
+                            <a class="page-link" href="?{% change_params page=page %}">{{ page }}</a>
+                        </li>
+                    {% endif %}
+                {% endfor %}
+
+
+                <li class="page-item {% if not page_obj.has_next %}disabled{% endif %}">
+                    <a class="page-link" href="{% if page_obj.has_next %}?{% change_params page=page_obj.next_page_number %}{% else %}#{% endif %}">Следующая</a>
+                </li>
+            </div>
+        </ul>
+    </nav>
+    {% endif %}
+
 </div>
 {% endblock content %}
 
-{% block footer %}
-<footer class="py-4 bg-dark">
-    <div class="container">
-        <p class="m-0 text-center text-white">Copyright &copy; Dzencode</p>
-    </div>
-</footer>
-{% endblock footer %}
