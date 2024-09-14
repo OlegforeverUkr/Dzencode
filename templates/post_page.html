@@ -16,32 +16,7 @@
     <div class="comments-section">
         <h3>Комментарии:</h3>
         {% for comment in page_obj %}
-            <div class="comment-box">
-                <div class="comment-header">
-                    {% if comment.user.avatar %}
-                        <img src="{{ comment.user.avatar.url }}" alt="Avatar" class="rounded-circle me-2" width="40" height="40">
-                    {% else %}
-                        <img src="{% static "baseavatar.jpg" %}" alt="Avatar" class="rounded-circle me-2" width="40" height="40">
-                    {% endif %}
-                    <div class="comment-info">
-                        <strong>{{ comment.user.username }}</strong>
-                        <span class="comment-date">{{ comment.created_at|date:"d.m.y H:i" }}</span>
-                    </div>
-                </div>
-                <div class="comment-body">
-                    <div class="comment-body-content">
-                        <p>{{ comment.body }}</p>
-                        <a href="#" class="btn btn-outline-info">Ответить</a>
-                    </div>
-                    {% if comment.image %}
-                        <img src="{{ comment.image.url }}" alt="Comment Image" class="comment-image" />
-                    {% endif %}
-                    {% if comment.file %}
-                        <img src="{% static "file_icon.png" %}" alt="Comment File" class="comment-image" width="80" height="80" />
-                        <a href="{{ comment.file.url }}">Скачать файл</a>
-                    {% endif %}
-                </div>
-            </div>
+            {% include 'comment.html' with comment=comment level=0 %}
         {% endfor %}
     
         <!-- Пагинация -->
@@ -64,6 +39,4 @@
         </div>
         
     </div>
-    
-    
 {% endblock %}

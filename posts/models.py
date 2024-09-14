@@ -1,5 +1,6 @@
 from django.core.validators import FileExtensionValidator
 from django.db import models
+from django.core.exceptions import ValidationError
 from services import (get_path_upload_comments_images, 
                       get_path_upload_textfile, 
                       validate_size_upload_textfile, 
@@ -53,6 +54,13 @@ class Comment(models.Model):
 
     def __str__(self):
         return f"Comment by {self.user} on {self.post}"
+    
+
+    def clean(self):
+        if self.parent:
+            if self.parent.post != self.post:
+                raise ValidationError("Родительский комментарий должен принадлежать тому же посту.")
+        super().clean()
     
 
     def save(self, *args, **kwargs):

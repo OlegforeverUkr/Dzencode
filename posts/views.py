@@ -52,9 +52,10 @@ class PostView(DetailView):
 
         comments = Comment.objects.filter(post=post).order_by('created_at')
 
-        paginator = Paginator(comments, 2)
+        paginator = Paginator(comments, 25)
         page_number = self.request.GET.get('page')
         page_obj = paginator.get_page(page_number)
 
         context['page_obj'] = page_obj
+        context["title"] = "Комментарии"
         return context
