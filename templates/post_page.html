@@ -1,0 +1,35 @@
+{% extends "base.html" %}
+{% load static %}
+
+
+{% block content %}
+
+    <h2>{{ post.title }}</h2>
+    <p>{{ post.body }}</p>
+    <p>Posted by {{ post.user.username }} on {{ post.created_at }}</p>
+
+    <h3>Comments:</h3>
+    <ul>
+        {% for comment in comments %}
+        <li>
+            <p>{{ comment.text }} - by {{ comment.user.username }} on {{ comment.created_at }}</p>
+            {% if comment.replies %}
+            <ul>
+                {% for reply in comment.replies.all %}
+                <li>{{ reply.text }} - by {{ reply.user.username }} on {{ reply.created_at }}</li>
+                {% endfor %}
+            </ul>
+            {% endif %}
+        </li>
+        {% endfor %}
+    </ul>
+
+{% endblock content %}
+
+{% block footer %}
+<footer class="py-4 bg-dark">
+    <div class="container">
+        <p class="m-0 text-center text-white">Copyright &copy; Dzencode</p>
+    </div>
+</footer>
+{% endblock footer %}

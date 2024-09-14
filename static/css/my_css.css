@@ -11,11 +11,33 @@ body {
   content: none;
 }
 
+.custom-card {
+  max-height: 300px;
+  overflow: hidden;
+}
+
+.custom-card-body {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  padding: 10px;
+}
+
+.card-title, .card-text {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+h5.card-title, .card-text {
+  margin-bottom: 5px;
+}
+
 .custom-shadow {
   box-shadow: 5px 5px 25px 19px #000000;
 }
 
-.product_id {
+.created_at {
   color: gray;
   font-size: 15px;
 }
@@ -45,7 +67,7 @@ body {
 }
 
 .font-nosifer {
-  color: #f3efec;
-  text-shadow: 2px 2px 4px rgba(236, 13, 13, 0.973);
+  color: #3b3939;
+  text-shadow: 2px 2px 4px rgba(126, 112, 112, 0.973);
   text-decoration: underline;
 }

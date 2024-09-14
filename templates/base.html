@@ -16,7 +16,7 @@
     <header>
         <nav class="navbar navbar-expand-lg bg-dark" data-bs-theme="dark">
             <div class="container">
-                <a class="navbar-brand" href="{% url 'users:main' %}">Home</a>
+                <a class="navbar-brand" href="{% url 'posts:main' %}">Home</a>
                 <button class="navbar-toggler" type="button" data-bs-toggle="collapse"
                     data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent"
                     aria-expanded="false" aria-label="Toggle navigation">
@@ -40,7 +40,7 @@
                             </li>
                         {% endif %}
                     </ul>
-                    <form class="d-flex" role="search" action="#" method="get">
+                    <form class="d-flex" role="search" action="{% url "posts:main" %}" method="get">
                         <input class="form-control me-2" type="search" name="q" placeholder="Search" aria-label="Search">
                         <button class="btn btn-outline-success text-white" type="submit">Поиск</button>
                     </form>
@@ -53,9 +53,6 @@
     {% block content %}
     {% endblock %}
 
-
-    {% block footer %}
-    {% endblock footer %}
     <script src="{% static "js/jquery/jquery-3.7.0.min.js" %}"></script>
     <script src="{% static "js/jquery-ajax.js" %}"></script>
     <script src="{% static "js/bootstrap/bootstrap.bundle.min.js" %}"></script>
