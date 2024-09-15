@@ -12,7 +12,7 @@ from users.forms import UserAuthForm, UserProfileForm, UserRegistrationForm
 
 class UserRegistrationView(CreateView):
     form_class = UserRegistrationForm
-    template_name = "registration.html"
+    template_name = "users/registration.html"
     success_url = reverse_lazy('posts:main')
 
     def form_valid(self, form):
@@ -29,7 +29,7 @@ class UserRegistrationView(CreateView):
 
 class UserLoginView(LoginView):
     form_class = UserAuthForm
-    template_name = "login.html"
+    template_name = "users/login.html"
     success_url = reverse_lazy('posts:main')
 
     def form_valid(self, form):
@@ -55,7 +55,7 @@ class UserLogoutView(View):
 
 class UserProfileView(LoginRequiredMixin, UpdateView):
     form_class = UserProfileForm
-    template_name = "profile.html"
+    template_name = "users/profile.html"
     success_url = reverse_lazy('users:profile')
 
     def get_object(self):

@@ -7,7 +7,7 @@ from posts.search import search_posts
 
 class MainView(ListView):
     model = Post
-    template_name = 'main_page.html'
+    template_name = 'base/main_page.html'
     context_object_name = "posts"
     paginate_by = 3
     allow_empty = True
@@ -22,7 +22,7 @@ class MainView(ListView):
             posts = super().get_queryset()
 
         if order_by:
-            if order_by == "user":
+            if order_by == "username":
                 posts = posts.order_by("user__username")
             elif order_by == "email":
                 posts = posts.order_by("user__email")
@@ -42,7 +42,7 @@ class MainView(ListView):
 
 class PostView(DetailView):
     model = Post
-    template_name = 'post_page.html'
+    template_name = 'posts/post_page.html'
     context_object_name = 'post'
 
 

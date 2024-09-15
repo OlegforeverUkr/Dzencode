@@ -5,10 +5,11 @@
         {% if comment.user.avatar %}
             <img src="{{ comment.user.avatar.url }}" alt="Avatar" class="rounded-circle me-2" width="40" height="40">
         {% else %}
-            <img src="{% static "baseavatar.jpg" %}" alt="Avatar" class="rounded-circle me-2" width="40" height="40">
+            <img src="{% static 'baseavatar.jpg' %}" alt="Avatar" class="rounded-circle me-2" width="40" height="40">
         {% endif %}
         <div class="comment-info">
             <strong>{{ comment.user.username }}</strong>
+            <p class="card-text mb-0">{{ comment.user.email }}</p>
             <span class="comment-date">{{ comment.created_at|date:"d.m.y H:i" }}</span>
         </div>
     </div>
@@ -16,7 +17,9 @@
     <div class="comment-body">
         <div class="comment-body-content">
             <p>{{ comment.body }}</p>
-            <a href="#" class="btn btn-outline-info">Ответить</a>
+            {% if user.is_authenticated %}
+                <a href="#" class="btn btn-outline-info">Ответить</a>
+            {% endif %}
         </div>
         <div class="comment-image-wrapper">
             {% if comment.image %}
@@ -30,12 +33,12 @@
             {% endif %}
         </div>
     </div>
-
-    {% if comment.replies %}
-        <div class="comment-children">
-            {% for child_comment in comment.replies.all %}
-                {% include 'comment.html' with comment=child_comment level=level|add:"20" %}
-            {% endfor %}
-        </div>
-    {% endif %}
 </div>
+
+{% if comment.replies %}
+    <div class="comment-replies">
+        {% for child_comment in comment.replies.all %}
+            {% include 'posts/comment.html' with comment=child_comment level=level|add:"20" %}
+        {% endfor %}
+    </div>
+{% endif %}
