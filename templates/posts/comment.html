@@ -18,7 +18,7 @@
         <div class="comment-body-content">
             <p>{{ comment.body }}</p>
             {% if user.is_authenticated %}
-                <a href="#" class="btn btn-outline-info">Ответить</a>
+                <a href="{% url 'posts:add_comment' post.id %}?parent_id={{ comment.id }}" class="btn btn-outline-info">Ответить</a>
             {% endif %}
         </div>
         <div class="comment-image-wrapper">

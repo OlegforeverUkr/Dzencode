@@ -24,6 +24,7 @@ from app import settings
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('api-auth/', include('rest_framework.urls')),
+    path('captcha/', include('captcha.urls')),
 
     path('', include('users.urls', namespace='user')),
     path('', include('posts.urls', namespace='post')),

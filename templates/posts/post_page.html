@@ -12,7 +12,7 @@
         
         {% if user.is_authenticated %}
             <div class="post-actions">
-                <a href="" class="btn btn-outline-info">Коментировать</a>
+                <a href="{% url 'posts:add_comment' post.id %}" class="btn btn-outline-info">Коментировать</a>
             </div>
         {% endif %}
     </div>
@@ -22,7 +22,7 @@
         {% for comment in page_obj %}
             {% include 'posts/comment.html' with comment=comment level=0 %}
         {% endfor %}
-    
+
     <!-- Пагинация -->
     {% if page_obj %}
     <nav aria-label="Page navigation">
@@ -61,6 +61,6 @@
     </nav>
     {% endif %}
 
-        
+
     </div>
 {% endblock %}
