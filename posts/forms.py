@@ -42,6 +42,9 @@ class AddCommentForm(forms.ModelForm):
         validators=[URLValidator()]
     )
 
+    image = forms.ImageField(required=False)
+    file = forms.FileField(required=False)
+
     captcha = CaptchaField()
 
     text = forms.CharField(
@@ -73,5 +76,19 @@ class AddCommentForm(forms.ModelForm):
             raise ValidationError(_('Введённое имя пользователя не соответствует текущему пользователю.'))
         if entered_email != user.email:
             raise ValidationError(_('Введённый email не соответствует текущему пользователю.'))
+
+
+        if cleaned_data.get('image'):
+            validate_upload_comments_images(image)
+
+        if cleaned_data.get('file'):
+            validate_size_upload_textfile(file)
+
+        parent_id = cleaned_data.get('parent_id')
+        if parent_id is not None:
+            try:
+                int(parent_id)
+            except ValueError:
+                raise ValidationError(_('Parent ID должен быть целым числом.'))
 
         return cleaned_data

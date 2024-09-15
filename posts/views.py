@@ -88,6 +88,8 @@ class AddCommentView(LoginRequiredMixin, FormView):
             user=self.request.user,
             url=form.cleaned_data['home_page'],
             body=form.cleaned_data['text'],
+            image=form.cleaned_data['image'],
+            file=form.cleaned_data['file'],
             parent=parent_comment
         )
         messages.success(self.request, 'Ваш комментарий был добавлен успешно.')

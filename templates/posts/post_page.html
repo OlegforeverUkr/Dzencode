@@ -12,7 +12,7 @@
         
         {% if user.is_authenticated %}
             <div class="post-actions">
-                <a href="{% url 'posts:add_comment' post.id %}" class="btn btn-outline-info">Коментировать</a>
+                <a href="{% url 'posts:add_post_comment' post.id %}" class="btn btn-outline-info">Коментировать</a>
             </div>
         {% endif %}
     </div>
