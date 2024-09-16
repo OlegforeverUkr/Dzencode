@@ -1,11 +1,13 @@
 from django import forms
 from django.core.validators import RegexValidator, EmailValidator, URLValidator
 from django.core.exceptions import ValidationError
+from django.shortcuts import get_object_or_404
 from django.utils.translation import gettext_lazy as _
 from captcha.fields import CaptchaField
 
 
 from posts.models import Comment
+from services import validate_size_upload_textfile, validate_upload_comments_images
 
 
 class AddCommentForm(forms.ModelForm):
@@ -77,18 +79,12 @@ class AddCommentForm(forms.ModelForm):
         if entered_email != user.email:
             raise ValidationError(_('Введённый email не соответствует текущему пользователю.'))
 
-
-        if cleaned_data.get('image'):
+        image = cleaned_data.get('image')
+        if image:
             validate_upload_comments_images(image)
 
-        if cleaned_data.get('file'):
+        file = cleaned_data.get('file')
+        if file:
             validate_size_upload_textfile(file)
-
-        parent_id = cleaned_data.get('parent_id')
-        if parent_id is not None:
-            try:
-                int(parent_id)
-            except ValueError:
-                raise ValidationError(_('Parent ID должен быть целым числом.'))
 
         return cleaned_data

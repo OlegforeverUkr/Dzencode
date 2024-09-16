@@ -1,6 +1,7 @@
 $(document).ready(function () {
     var notification = $('#notification');
 
+    // Автоматическое скрытие уведомлений через 5 секунд
     if (notification.length > 0) {
         setTimeout(function () {
             notification.fadeOut('slow', function () {
@@ -8,4 +9,7 @@ $(document).ready(function () {
             });
         }, 5000);
     }
+
+    // Инициализация всех обработчиков событий
+    initCommentEventListeners();
 });
