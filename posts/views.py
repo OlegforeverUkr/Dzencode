@@ -1,7 +1,9 @@
 from django.contrib import messages
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.core.paginator import Paginator
+from django.http import JsonResponse
 from django.shortcuts import get_object_or_404, redirect
+from django.template.loader import render_to_string
 from django.urls import reverse
 from django.views.generic import DetailView, FormView, ListView
 from posts.forms import AddCommentForm
@@ -62,6 +64,7 @@ class PostView(DetailView):
 
         context['page_obj'] = page_obj
         context["title"] = "Комментарии"
+        context['form'] = AddCommentForm()
         return context
 
 
@@ -86,6 +89,11 @@ class AddCommentToPostView(LoginRequiredMixin, FormView):
             image=form.cleaned_data['image'],
             file=form.cleaned_data['file']
         )
+
+        if self.request.headers.get('x-requested-with') == 'XMLHttpRequest':
+            comments = Comment.objects.filter(post=post, parent__isnull=True).order_by('created_at')
+            html = render_to_string('posts/comments_list.html', {'comments': comments}, request=self.request)
+            return JsonResponse({'html': html})
 
         messages.success(self.request, 'Ваш комментарий был добавлен успешно.')
         return redirect(reverse('posts:post_detail', args=[post.id]))
@@ -132,6 +140,11 @@ class AddCommentToCommentView(LoginRequiredMixin, FormView):
             file=form.cleaned_data['file'],
             parent=parent_comment
         )
+
+        if self.request.headers.get('x-requested-with') == 'XMLHttpRequest':
+            comments = Comment.objects.filter(post=post, parent__isnull=True).order_by('created_at')
+            html = render_to_string('posts/comments_list.html', {'comments': comments}, request=self.request)
+            return JsonResponse({'html': html})
 
         messages.success(self.request, 'Ваш комментарий был добавлен успешно.')
         return redirect(reverse('posts:post_detail', args=[post.id]))

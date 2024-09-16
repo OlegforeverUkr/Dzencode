@@ -17,9 +17,13 @@
     <div class="comment-body">
         <div class="comment-body-content">
             <p>{{ comment.body }}</p>
+
             {% if user.is_authenticated %}
-                <a href="{% url 'posts:add_comment_comment' post.id comment.id %}" class="btn btn-outline-info">Ответить</a>
+                <button type="button" class="btn btn-secondary open-comment-comment-modal" data-post-id="{{ post.id }}" data-comment-id="{{ comment.id }}" data-url="{% url 'posts:add_comment_comment' post.id comment.id %}">
+                    Ответить на комментарий
+                </button>
             {% endif %}
+            
         </div>
         <div class="comment-image-wrapper">
             {% if comment.image %}

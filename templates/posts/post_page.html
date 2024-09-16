@@ -11,10 +11,11 @@
         <p>Создан: {{ post.created_at|date:"H:i d.m.y" }}</p>
         
         {% if user.is_authenticated %}
-            <div class="post-actions">
-                <a href="{% url 'posts:add_post_comment' post.id %}" class="btn btn-outline-info">Коментировать</a>
-            </div>
+            <button type="button" class="btn btn-primary open-post-comment-modal" data-post-id="{{ post.id }}" data-url="{% url 'posts:add_post_comment' post.id %}">
+                Комментировать пост
+            </button>
         {% endif %}
+        
     </div>
 
     <div class="comments-section">
@@ -60,7 +61,7 @@
         </ul>
     </nav>
     {% endif %}
-
+    {% include "posts/modal_form.html" %}
 
     </div>
 {% endblock %}
