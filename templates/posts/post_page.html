@@ -15,6 +15,10 @@
                 Комментировать пост
             </button>
         {% endif %}
+
+        {% if user.id == post.user.id %}
+            <a href="{% url 'posts:delete_post' post.pk %}" class="btn btn-primary">Удалить пост</a>
+        {% endif %}
         
     </div>
 

@@ -89,11 +89,6 @@
                                 {% endif %}
                             {% endautoescape %}
 
-                            {% if user.is_authenticated %}
-                                <div class="post-actions">
-                                    <a href="{% url 'posts:add_post_comment' post.id %}" class="btn btn-outline-info">Коментировать</a>
-                                </div>
-                            {% endif %}
                         </p>
                         <p class="created_at">Создан: {{ post.created_at }}</p>
                     </div>

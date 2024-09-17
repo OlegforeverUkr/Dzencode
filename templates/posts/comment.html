@@ -24,6 +24,10 @@
                 </button>
             {% endif %}
             
+            {% if user.id == comment.user.id %}
+                <a href="{% url 'posts:delete_comment' comment.pk %}" class="btn btn-primary">Удалить Коммент</a>
+            {% endif %}
+
         </div>
         <div class="comment-image-wrapper">
             {% if comment.image %}

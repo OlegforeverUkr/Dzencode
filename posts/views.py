@@ -1,11 +1,11 @@
 from django.contrib import messages
-from django.contrib.auth.mixins import LoginRequiredMixin
+from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 from django.core.paginator import Paginator
-from django.http import JsonResponse
+from django.http import HttpResponseRedirect, JsonResponse
 from django.shortcuts import get_object_or_404, redirect
 from django.template.loader import render_to_string
-from django.urls import reverse
-from django.views.generic import DetailView, FormView, ListView
+from django.urls import reverse, reverse_lazy
+from django.views.generic import DeleteView, DetailView, FormView, ListView
 from posts.forms import AddCommentForm
 
 from posts.models import Comment, Post
@@ -47,7 +47,7 @@ class MainView(ListView):
 
 
 
-class PostView(DetailView):
+class PostsView(DetailView):
     model = Post
     template_name = 'posts/post_page.html'
     context_object_name = 'post'
@@ -169,3 +169,32 @@ class AddCommentToCommentView(LoginRequiredMixin, FormView):
         context['title'] = 'Добавить комментарий'
 
         return context
+
+
+class DeletePostView(UserPassesTestMixin, DeleteView):
+    model = Post
+    success_url = reverse_lazy('posts:main')
+
+    def test_func(self):
+        post = self.get_object()
+        return self.request.user == post.user or self.request.user.is_superuser
+
+    def get(self, request, *args, **kwargs):
+        self.object = self.get_object()
+        self.object.delete()
+        messages.success(request, 'Пост успешно удалён.')
+        return HttpResponseRedirect(self.get_success_url())
+    
+
+class DeleteCommentView(UserPassesTestMixin, DeleteView):
+    model = Comment
+
+    def test_func(self):
+        comment = self.get_object()
+        return self.request.user == comment.user or self.request.user.is_superuser
+
+    def get(self, request, *args, **kwargs):
+        self.object = self.get_object()
+        self.object.delete()
+        messages.success(request, 'Комментарий успешно удалён.')
+        return redirect(request.META["HTTP_REFERER"])
