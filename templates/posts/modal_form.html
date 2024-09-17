@@ -9,15 +9,13 @@
         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
       </div>
       <div class="modal-body">
-
-        <form id="commentForm" method="post" enctype="multipart/form-data">
-          {% csrf_token %}
-          {{ form.as_p }}
-          <input type="hidden" id="parentId" name="parent_id" value="">
-          <button type="submit" class="btn btn-primary">Добавить комментарий</button>
-        </form>
-        
-      </div>
+          <form id="commentForm" method="post" enctype="multipart/form-data">
+              {% csrf_token %}
+              {{ form.as_p }}
+              <input type="hidden" id="parentId" name="parent_id" value="">
+              <button type="submit" class="btn btn-primary">Добавить комментарий</button>
+          </form>
+        <div class="error-message"></div>  </div>
     </div>
   </div>
 </div>

@@ -1,5 +1,6 @@
 {% load static %}
 
+
 <div class="comment-box" style="margin-left: {{ level }}px;">
     <div class="comment-header">
         {% if comment.user.avatar %}
@@ -33,6 +34,7 @@
             {% if comment.image %}
                 <img src="{{ comment.image.url }}" alt="Comment Image" class="comment-image">
             {% endif %}
+            
             {% if comment.file %}
                 <div class="comment-file">
                     <img src="{% static 'file_icon.png' %}" alt="Comment File" class="comment-image">

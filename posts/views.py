@@ -100,12 +100,14 @@ class AddCommentToPostView(LoginRequiredMixin, FormView):
 
 
     def form_invalid(self, form):
-        if form.errors:
+        if self.request.headers.get('x-requested-with') == 'XMLHttpRequest':
+            data = {'form': form.errors}
             for field, errors in form.errors.items():
                 for error in errors:
                     messages.error(self.request, f'{error}')
-
-        return self.render_to_response(self.get_context_data(form=form))
+            return JsonResponse(data, status=400)
+        else:
+            return self.render_to_response(self.get_context_data(form=form))
 
 
     def get_context_data(self, **kwargs):
@@ -151,12 +153,14 @@ class AddCommentToCommentView(LoginRequiredMixin, FormView):
 
 
     def form_invalid(self, form):
-        if form.errors:
+        if self.request.headers.get('x-requested-with') == 'XMLHttpRequest':
+            data = {'form': form.errors}
             for field, errors in form.errors.items():
                 for error in errors:
                     messages.error(self.request, f'{error}')
-
-        return self.render_to_response(self.get_context_data(form=form))
+            return JsonResponse(data, status=400)
+        else:
+            return self.render_to_response(self.get_context_data(form=form))
 
 
     def get_context_data(self, **kwargs):

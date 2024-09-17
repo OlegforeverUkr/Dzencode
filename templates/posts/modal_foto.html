@@ -1,0 +1,22 @@
+<!-- Модальное окно для просмотра изображений -->
+<div class="modal fade" id="imageGalleryModal" tabindex="-1" aria-labelledby="imageGalleryModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="imageGalleryModalLabel">Галерея изображений</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <div id="lightbox-gallery">
+                    {% for comment in page_obj %}
+                        {% if comment.image %}
+                            <a href="{{ comment.image.url }}" data-lightbox="comment-images" data-title="Комментарий от {{ comment.user.username }}">
+                                <img src="{{ comment.image.url }}" alt="Комментарий от {{ comment.user.username }}" class="img-thumbnail">
+                            </a>
+                        {% endif %}
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
