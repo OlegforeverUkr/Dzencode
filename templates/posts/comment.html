@@ -1,0 +1,56 @@
+{% load static %}
+
+
+<div class="comment-box" style="margin-left: {{ level }}px;">
+    <div class="comment-header">
+        {% if comment.user.avatar %}
+            <img src="{{ comment.user.avatar.url }}" alt="Avatar" class="rounded-circle me-2" width="40" height="40">
+        {% else %}
+            <img src="{% static 'baseavatar.jpg' %}" alt="Avatar" class="rounded-circle me-2" width="40" height="40">
+        {% endif %}
+        <div class="comment-info">
+            <strong>{{ comment.user.username }}</strong>
+            <p class="card-text mb-0">{{ comment.user.email }}</p>
+            <span class="comment-date">{{ comment.created_at|date:"d.m.y H:i" }}</span>
+        </div>
+    </div>
+
+    <div class="comment-body">
+        <div class="comment-body-content">
+            {% autoescape off %}
+                <p>{{ comment.body }}</p>
+            {% endautoescape %}
+            
+            {% if user.is_authenticated %}
+                <button type="button" class="btn btn-secondary open-comment-comment-modal" data-post-id="{{ post.id }}" data-comment-id="{{ comment.id }}" data-url="{% url 'posts:add_comment_comment' post.id comment.id %}">
+                    Ответить на комментарий
+                </button>
+            {% endif %}
+            
+            {% if user.id == comment.user.id %}
+                <a href="{% url 'posts:delete_comment' comment.pk %}" class="btn btn-primary">Удалить Коммент</a>
+            {% endif %}
+
+        </div>
+        <div class="comment-image-wrapper">
+            {% if comment.image %}
+                <img src="{{ comment.image.url }}" alt="Comment Image" class="comment-image">
+            {% endif %}
+            
+            {% if comment.file %}
+                <div class="comment-file">
+                    <img src="{% static 'file_icon.png' %}" alt="Comment File" class="comment-image">
+                    <a href="{{ comment.file.url }}">Скачать файл</a>
+                </div>
+            {% endif %}
+        </div>
+    </div>
+</div>
+
+{% if comment.replies %}
+    <div class="comment-replies">
+        {% for child_comment in comment.replies.all %}
+            {% include 'posts/comment.html' with comment=child_comment level=level|add:"20" %}
+        {% endfor %}
+    </div>
+{% endif %}

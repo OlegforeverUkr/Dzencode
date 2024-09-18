@@ -1,0 +1,107 @@
+.custom-card {
+    max-height: 300px;
+    overflow: hidden;
+}
+  
+.custom-card-body {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    padding: 10px;
+}
+  
+.card-title, .card-text {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+  
+h5.card-title, .card-text {
+    margin-bottom: 5px;
+}
+  
+.comments-section {
+    padding: 25px;
+}
+  
+.comment-box {
+    background-color: #f1e7ee;
+    border-radius: 20px;
+    padding: 15px;
+    margin-bottom: 10px;
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.3);
+    overflow: auto;
+    position: relative;
+}
+  
+.comment-replies {
+    padding-top: 5px;
+    margin-left: 20px;
+}
+  
+.comment-header {
+    display: flex;
+    align-items: center;
+    margin-bottom: 10px;
+}
+  
+.avatar {
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    margin-right: 15px;
+}
+  
+.comment-info {
+    display: flex;
+    flex-direction: column;
+}
+  
+.comment-info strong {
+    font-size: 16px;
+    color: #333;
+}
+  
+.comment-date {
+  font-size: 12px;
+  color: #999;
+}
+  
+.comment-body {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin-top: 10px;
+}
+  
+.comment-body-content {
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+}
+
+.comment-body-content p {
+  margin-right: auto;
+}
+  
+.comment-image-wrapper {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+}
+
+.comment-image {
+  max-width: 100px;
+  border-radius: 5px;
+}
+
+.comment-file {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.comment-file img {
+  max-width: 80px;
+  border-radius: 5px;
+}

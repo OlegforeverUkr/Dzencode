@@ -1,4 +1,4 @@
-{% extends "base.html" %}
+{% extends "base/base.html" %}
 {% load static %}
 {% load posts_tags %}
 
@@ -12,6 +12,10 @@
                 aria-expanded="false">
                 Фильтры
             </button>
+            
+            {% if user.is_authenticated %}
+                <a href="{% url 'posts:add_post' %}" class="btn btn-dark">Добавить пост</a>
+            {% endif %}
 
             <form action="" method="get" class="dropdown-menu bg-dark" data-bs-theme="dark">
                 <p class="text-white mx-3 mt-3">Сортировать:</p>
@@ -79,6 +83,7 @@
                             {% endif %}
                             <p class="card-text mb-0">{{ post.user.username }}</p>
                         </div>
+                        <strong>{{ post.user.email }}</strong>
                         <p class="card-text">
                             {% autoescape off %}
                                 {% if post.bodyline %}
@@ -87,6 +92,7 @@
                                     {{ post.body|truncatechars:100 }}
                                 {% endif %}
                             {% endautoescape %}
+
                         </p>
                         <p class="created_at">Создан: {{ post.created_at }}</p>
                     </div>
@@ -96,35 +102,8 @@
         {% endfor %}
         
     </div>
-
-
-    <!-- Paginator -->
-    {% if posts %}
-    <nav aria-label="Page navigation example">
-        <ul class="pagination justify-content-center my-4">
-            <div class="custom-shadow d-flex">
-
-                <li class="page-item {% if not page_obj.has_previous %}disabled{% endif %}">
-                <a class="page-link" href="{% if page_obj.has_previous %}?{% change_params page=page_obj.previous_page_number %}{% else %}#{% endif %}">Назад</a>
-                </li>
-
-                {% for page in page_obj.paginator.page_range %}
-                    {% if page >= page_obj.number|add:-2 and page <= page_obj.number|add:2 %}
-                        <li class="page-item {% if page_obj.number == page %} active {% endif %}">
-                            <a class="page-link" href="?{% change_params page=page %}">{{ page }}</a>
-                        </li>
-                    {% endif %}
-                {% endfor %}
-
-
-                <li class="page-item {% if not page_obj.has_next %}disabled{% endif %}">
-                    <a class="page-link" href="{% if page_obj.has_next %}?{% change_params page=page_obj.next_page_number %}{% else %}#{% endif %}">Следующая</a>
-                </li>
-            </div>
-        </ul>
-    </nav>
-    {% endif %}
+    
+    {% include "base/post_paginator.html" %}
 
 </div>
 {% endblock content %}
-

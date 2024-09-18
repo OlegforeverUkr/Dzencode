@@ -1,0 +1,28 @@
+{% load static %}
+
+<!-- Модальное окно -->
+<div class="modal fade" id="commentModal" tabindex="-1" aria-labelledby="commentModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="commentModalLabel">Добавить комментарий</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+          <form id="commentForm" method="post" enctype="multipart/form-data">
+              {% csrf_token %}
+                <div class="btn-group mb-3" role="group" aria-label="HTML Tags">
+                  <button type="button" class="btn btn-outline-secondary" onclick="insertTag('i')">[i]</button>
+                  <button type="button" class="btn btn-outline-secondary" onclick="insertTag('strong')">[strong]</button>
+                  <button type="button" class="btn btn-outline-secondary" onclick="insertTag('code')">[code]</button>
+                  <button type="button" class="btn btn-outline-secondary" onclick="insertTag('a', true)">[a]</button>
+                </div>
+              {{ form.as_p }}
+              <input type="hidden" id="parentId" name="parent_id" value="">
+              <button type="submit" class="btn btn-primary">Добавить комментарий</button>
+          </form>
+        <div class="error-message"></div>  </div>
+    </div>
+  </div>
+</div>
+

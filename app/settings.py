@@ -42,6 +42,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
 
     'django.contrib.postgres',
+    'captcha',
     'rest_framework',
     'users',
     'posts'
@@ -147,3 +148,10 @@ LOGIN_REDIRECT_URL = "/"
 
 MEDIA_URL = 'media/'
 MEDIA_ROOT = BASE_DIR / 'media'
+
+
+CAPTCHA_CHALLENGE_FUNCT = 'captcha.helpers.math_challenge'
+
+if DEBUG:
+    CAPTCHA_NOISE_FUNCTIONS = ('captcha.helpers.noise_null',)
+

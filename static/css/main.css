@@ -11,30 +11,17 @@ body {
   content: none;
 }
 
-.custom-card {
-  max-height: 300px;
-  overflow: hidden;
-}
-
-.custom-card-body {
-  display: flex;
-  flex-direction: column;
-  justify-content: space-between;
-  padding: 10px;
-}
-
-.card-title, .card-text {
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-}
-
-h5.card-title, .card-text {
-  margin-bottom: 5px;
-}
-
 .custom-shadow {
   box-shadow: 5px 5px 25px 19px #000000;
+}
+
+.font-nosifer {
+  font-family: "Nosifer", sans-serif;
+  font-weight: 600;
+  font-style: normal;
+  color: #3b3939;
+  text-shadow: 2px 2px 4px rgba(126, 112, 112, 0.973);
+  text-decoration: underline;
 }
 
 .created_at {
@@ -57,17 +44,4 @@ h5.card-title, .card-text {
   top: 80%;
   border-radius: 15px;
   font-size: 0.7rem;
-}
-
-
-.font-nosifer {
-  font-family: "Nosifer", sans-serif;
-  font-weight: 600;
-  font-style: normal;
-}
-
-.font-nosifer {
-  color: #3b3939;
-  text-shadow: 2px 2px 4px rgba(126, 112, 112, 0.973);
-  text-decoration: underline;
 }

@@ -1,0 +1,42 @@
+{% extends "base/base.html" %}
+{% load static %}
+{% load posts_tags %}
+
+{% block content %}
+    <div class="post-detail">
+        <h1>{{ post.title }}</h1>
+        <p>{{ post.body }}</p>
+        <strong>Автор: {{ post.user.username }}</strong>
+        <p>{{ post.user.email }}</p>
+        <p>Создан: {{ post.created_at|date:"H:i d.m.y" }}</p>
+        
+
+        {% if user.is_authenticated %}
+            <button type="button" class="btn btn-primary open-post-comment-modal" data-post-id="{{ post.id }}" data-url="{% url 'posts:add_post_comment' post.id %}">
+                Комментировать пост
+            </button>
+        {% endif %}
+
+        {% if user.id == post.user.id %}
+            <a href="{% url 'posts:delete_post' post.pk %}" class="btn btn-primary">Удалить пост</a>
+        {% endif %}
+
+        {% if post.comments.all %}
+            <button type="button" class="btn btn-dark" id="openGalleryButton">
+                Все фото поста
+            </button>
+        {% endif %}
+    </div>
+
+    <div class="comments-section">
+        <h3>Комментарии:</h3>
+        {% for comment in page_obj %}
+            {% include 'posts/comment.html' with comment=comment level=0 %}
+        {% endfor %}
+
+        {% include "base/comment_paginator.html" %}
+        {% include "base/modal_form.html" %}
+        {% include "base/modal_foto.html" %}
+
+    </div>
+{% endblock %}

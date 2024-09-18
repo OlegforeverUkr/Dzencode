@@ -16,4 +16,4 @@ class CommentAdmin(admin.ModelAdmin):
     list_display = ["user", "post", "created_at"]
     search_fields = ["user__username", "post__title"]
     list_filter = ["user", "post", "created_at"]
-    fields = [("post", "user"), "body", "image", "file"]
+    fields = [("post", "parent", "user"), "body", "image", "file"]
