@@ -26,6 +26,7 @@ urlpatterns = [
     path('api-auth/', include('rest_framework.urls')),
     path('captcha/', include('captcha.urls')),
 
+    path('api/', include('api.urls', namespace='api')),
     path('', include('users.urls', namespace='user')),
     path('', include('posts.urls', namespace='post')),
 ]

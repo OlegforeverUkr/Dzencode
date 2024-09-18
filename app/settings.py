@@ -45,7 +45,8 @@ INSTALLED_APPS = [
     'captcha',
     'rest_framework',
     'users',
-    'posts'
+    'posts',
+    'api'
 ]
 
 MIDDLEWARE = [
