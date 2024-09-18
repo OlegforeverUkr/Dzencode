@@ -58,3 +58,24 @@ $(document).ready(function () {
         }, 200);
     });
 });
+
+
+function insertTag(tag, isLink = false) {
+    var textarea = document.getElementById('id_body');
+    var start = textarea.selectionStart;
+    var end = textarea.selectionEnd;
+    var text = textarea.value;
+    
+    if (isLink) {
+        var url = prompt("Введите URL ссылки:", "https://");
+        var title = prompt("Введите Title для ссылки:", "");
+        if (url) {
+            var tagContent = `<a href="${url}" title="${title}">текст ссылки</a>`;
+            textarea.value = text.substring(0, start) + tagContent + text.substring(end);
+        }
+    } else {
+        textarea.value = text.substring(0, start) + `<${tag}>` + text.substring(start, end) + `</${tag}>` + text.substring(end);
+    }
+
+    textarea.focus();
+}

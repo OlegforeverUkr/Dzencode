@@ -74,6 +74,7 @@ class CreatePostView(LoginRequiredMixin, FormView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
+        context['form'] = AddPostForm()
         context['title'] = 'Добавить пост'
         return context
     

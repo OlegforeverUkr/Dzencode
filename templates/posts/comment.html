@@ -17,8 +17,10 @@
 
     <div class="comment-body">
         <div class="comment-body-content">
-            <p>{{ comment.body }}</p>
-
+            {% autoescape off %}
+                <p>{{ comment.body }}</p>
+            {% endautoescape %}
+            
             {% if user.is_authenticated %}
                 <button type="button" class="btn btn-secondary open-comment-comment-modal" data-post-id="{{ post.id }}" data-comment-id="{{ comment.id }}" data-url="{% url 'posts:add_comment_comment' post.id comment.id %}">
                     Ответить на комментарий

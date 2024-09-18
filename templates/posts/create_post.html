@@ -1,13 +1,10 @@
 {% extends "base/base.html" %}
 {% load static %}
 
-
 {% block content %}
-
 <div class="container">
     <div class="row mt-1">
-        <div class="col-lg-1">
-        </div>
+        <div class="col-lg-1"></div>
         <div class="col-lg-10">
             <div class="row">
                 <div class="container mt-5">
@@ -17,7 +14,34 @@
 
                             <form method="post">
                                 {% csrf_token %}
-                                {{ form.as_p }}
+                                
+                                <div class="form-group mb-3">
+                                    <label for="id_user_name" class="form-label">Введите ваш юзернейм</label>
+                                    {{ form.user_name }}
+                                </div>
+
+                                <div class="form-group mb-3">
+                                    <label for="id_title" class="form-label">Введите заголовок поста</label>
+                                    {{ form.title }}
+                                </div>
+
+                                <div class="btn-group mb-3" role="group" aria-label="HTML Tags">
+                                    <button type="button" class="btn btn-outline-secondary" onclick="insertTag('i')">[i]</button>
+                                    <button type="button" class="btn btn-outline-secondary" onclick="insertTag('strong')">[strong]</button>
+                                    <button type="button" class="btn btn-outline-secondary" onclick="insertTag('code')">[code]</button>
+                                    <button type="button" class="btn btn-outline-secondary" onclick="insertTag('a', true)">[a]</button>
+                                </div>
+
+                                <div class="form-group mb-3">
+                                    <label for="id_body" class="form-label">Введите текст поста</label>
+                                    {{ form.body }}
+                                </div>
+
+                                <div class="form-group mb-3">
+                                    <label for="id_url" class="form-label">Введите вашу страницу (опционально)</label>
+                                    {{ form.url }}
+                                </div>
+
                                 <button type="submit" class="btn btn-dark btn-block">Добавить</button>
                             </form>
 
@@ -29,6 +53,5 @@
         </div>
     </div>
 </div>
-
 
 {% endblock content %}

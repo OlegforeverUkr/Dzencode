@@ -1,13 +1,16 @@
+import bleach
 from django import forms
 from django.core.validators import RegexValidator, EmailValidator, URLValidator
 from django.core.exceptions import ValidationError
-from django.shortcuts import get_object_or_404
 from django.utils.translation import gettext_lazy as _
 from captcha.fields import CaptchaField
 
-
 from posts.models import Comment, Post
 from services import validate_size_upload_textfile, validate_upload_comments_images
+
+
+ALLOWED_TAGS = ['a', 'code', 'i', 'strong']
+ALLOWED_ATTRIBUTES = {'a': ['href', 'title']}
 
 
 class AddCommentForm(forms.ModelForm):
@@ -52,8 +55,8 @@ class AddCommentForm(forms.ModelForm):
     text = forms.CharField(
         label='Text',
         widget=forms.Textarea(
-            attrs={'rows': 4, 'cols': 40, 'class': 'form-control'}),
-        help_text=_('No HTML tags allowed.')
+            attrs={'rows': 4, 'cols': 40, 'class': 'form-control', 'id': 'id_body'}),
+        help_text=_('You can use the following HTML tags: a, i, strong, code.')
     )
 
     class Meta:
@@ -114,9 +117,9 @@ class AddPostForm(forms.ModelForm):
 
     body = forms.CharField(
         widget=forms.Textarea(
-            attrs={'rows': 4, 'cols': 40, 'class': 'form-control'}),
+            attrs={'rows': 4, 'cols': 40, 'class': 'form-control', 'id': 'id_body'}),
         label='Text',
-        help_text=_('No HTML tags allowed.')
+        help_text=_('You can use the following HTML tags: a, i, strong, code.')
     )
 
     url = forms.URLField(
@@ -131,13 +134,23 @@ class AddPostForm(forms.ModelForm):
         model = Post
         fields = ['user_name', 'title', 'body', 'url']
 
+    def clean_body(self):
+        body = self.cleaned_data.get('body')
+
+        allowed_tags = ['a', 'i', 'strong', 'code']
+        cleaned_body = bleach.clean(body, tags=allowed_tags, strip=False)
+
+        if body != cleaned_body:
+            raise ValidationError(_('Текст содержит запрещенные HTML-теги или некорректные атрибуты.'))
+
+        return cleaned_body
 
     def clean(self):
         cleaned_data = super().clean()
 
         user = self.initial['user']
         if not user.is_authenticated:
-            raise ValidationError(_('Вы должны войти в систему, чтобы оставлять комментарии.'))
+            raise ValidationError(_('Вы должны войти в систему, чтобы оставлять комментарии.'))
 
         entered_username = cleaned_data.get('user_name')
         if entered_username != user.username:
