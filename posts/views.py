@@ -6,7 +6,7 @@ from django.shortcuts import get_object_or_404, redirect
 from django.template.loader import render_to_string
 from django.urls import reverse, reverse_lazy
 from django.views.generic import DeleteView, DetailView, FormView, ListView
-from posts.forms import AddCommentForm
+from posts.forms import AddCommentForm, AddPostForm
 
 from posts.models import Comment, Post
 from posts.search import search_posts
@@ -66,6 +66,40 @@ class PostsView(DetailView):
         context["title"] = "Комментарии"
         context['form'] = AddCommentForm()
         return context
+
+
+class CreatePostView(LoginRequiredMixin, FormView):
+    form_class = AddPostForm
+    template_name = 'posts/create_post.html'
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['title'] = 'Добавить пост'
+        return context
+    
+    def get_form_kwargs(self):
+        kwargs = super().get_form_kwargs()
+        kwargs['initial'] = {'user': self.request.user}
+        return kwargs
+
+    def form_valid(self, form):
+        post = Post.objects.create(
+            user=self.request.user,
+            title=form.cleaned_data['title'],
+            body=form.cleaned_data['body'],
+            url=form.cleaned_data['url']
+        )
+
+        messages.success(self.request, 'Ваш пост был создан успешно.')
+        return redirect(reverse('posts:post_detail', args=[post.id]))
+
+
+    def form_invalid(self, form):
+        for field, errors in form.errors.items():
+            for error in errors:
+                messages.error(self.request, f'{error}')
+        return self.render_to_response(self.get_context_data(form=form))
+
 
 
 class AddCommentToPostView(LoginRequiredMixin, FormView):

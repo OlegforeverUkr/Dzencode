@@ -43,3 +43,18 @@ document.querySelectorAll('.open-comment-comment-modal').forEach(button => {
         openCommentModal(postId, commentId, this.getAttribute('data-url'));
     });
 });
+
+
+
+$(document).ready(function () {
+    $('#openGalleryButton').on('click', function () {
+        $('#imageGalleryModal').modal('show');
+
+        setTimeout(function () {
+            var firstImageLink = $('#lightbox-gallery a').first();
+            if (firstImageLink.length) {
+                firstImageLink.trigger('click');
+            }
+        }, 200);
+    });
+});

@@ -1,0 +1,34 @@
+{% load posts_tags %}
+
+{% if posts %}
+<nav aria-label="Page navigation example">
+    <ul class="pagination justify-content-center">
+        <div class="custom-shadow d-flex">
+
+            <li class="page-item {% if not page_obj.has_previous %}disabled{% endif %}">
+                <a class="page-link rounded-start" href="?page=1">&laquo; начало</a>
+            </li>
+
+            <li class="page-item {% if not page_obj.has_previous %}disabled{% endif %}">
+                <a class="page-link" href="{% if page_obj.has_previous %}?{% change_params page=page_obj.previous_page_number %}{% else %}#{% endif %}">Назад</a>
+            </li>
+
+            {% for page in page_obj.paginator.page_range %}
+                {% if page >= page_obj.number|add:-2 and page <= page_obj.number|add:2 %}
+                    <li class="page-item {% if page_obj.number == page %} active {% endif %}">
+                        <a class="page-link" href="?{% change_params page=page %}">{{ page }}</a>
+                    </li>
+                {% endif %}
+            {% endfor %}
+
+            <li class="page-item {% if not page_obj.has_next %}disabled{% endif %}">
+                <a class="page-link" href="{% if page_obj.has_next %}?{% change_params page=page_obj.next_page_number %}{% else %}#{% endif %}">Следующая</a>
+            </li>
+
+            <li class="page-item {% if not page_obj.has_next %}disabled{% endif %}">
+                <a class="page-link" href="?page={{ page_obj.paginator.num_pages }}">конец &raquo;</a>
+            </li>
+        </div>
+    </ul>
+</nav>
+{% endif %}
