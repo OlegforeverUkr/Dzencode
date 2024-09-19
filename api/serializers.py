@@ -11,8 +11,8 @@ class UserSerializer(serializers.ModelSerializer):
 
 class PostSerializer(serializers.ModelSerializer):
     user = UserSerializer(read_only=True)
-    created_at = serializers.SerializerMethodField()
-    updated_at = serializers.SerializerMethodField()
+    created_at = serializers.SerializerMethodField(read_only=True)
+    updated_at = serializers.SerializerMethodField(read_only=True)
 
     class Meta:
         model = Post
@@ -28,7 +28,7 @@ class PostSerializer(serializers.ModelSerializer):
 
 class CommentSerializer(serializers.ModelSerializer):
     user = UserSerializer(read_only=True)
-    post = PostSerializer(read_only=True)
+    post = serializers.PrimaryKeyRelatedField(queryset=Post.objects.all())
     created_at = serializers.SerializerMethodField()
     updated_at = serializers.SerializerMethodField()
 
@@ -41,3 +41,17 @@ class CommentSerializer(serializers.ModelSerializer):
 
     def get_updated_at(self, obj):
         return obj.updated_at.strftime("%H:%M:%S %d:%m:%Y")
+    
+
+class CustomCommentsSerializer(serializers.ModelSerializer):
+    username = serializers.SerializerMethodField()
+
+    class Meta:
+        model = Comment
+        fields = ("username", "body")
+
+
+    def get_username(self, obj):
+        return obj.user.username
+    
+       

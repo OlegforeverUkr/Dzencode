@@ -42,6 +42,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
 
     'django.contrib.postgres',
+    'django_filters',
     'captcha',
     'rest_framework',
     'users',
@@ -156,3 +157,11 @@ CAPTCHA_CHALLENGE_FUNCT = 'captcha.helpers.math_challenge'
 if DEBUG:
     CAPTCHA_NOISE_FUNCTIONS = ('captcha.helpers.noise_null',)
 
+
+REST_FRAMEWORK = {
+    'DEFAULT_FILTER_BACKENDS': [
+        'django_filters.rest_framework.DjangoFilterBackend',
+        'rest_framework.filters.OrderingFilter',
+    ],
+    'ORDERING_PARAM': 'ordering',
+}

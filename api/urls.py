@@ -5,7 +5,11 @@ from api import views
 
 app_name = 'api'
 
+router = routers.DefaultRouter()
+router.register(prefix=r"posts", viewset=views.PostsViewset, basename="post")
+router.register(prefix=r"comments", viewset=views.CommentViewset, basename="comment")
+
+
 urlpatterns = [
-    path('posts/', views.PostApiView.as_view(), name="posts"),
-    path('comments/', views.CommentApiView.as_view(), name="comments"),
+    path('', include(router.urls)),
 ]
