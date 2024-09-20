@@ -33,7 +33,9 @@
         {% for comment in page_obj %}
             {% include 'posts/comment.html' with comment=comment level=0 %}
         {% endfor %}
+        
 
+        {% include "base/notifications.html" %}
         {% include "base/comment_paginator.html" %}
         {% include "base/modal_form.html" %}
         {% include "base/modal_foto.html" %}

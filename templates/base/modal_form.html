@@ -11,12 +11,12 @@
       <div class="modal-body">
           <form id="commentForm" method="post" enctype="multipart/form-data">
               {% csrf_token %}
-                <div class="btn-group mb-3" role="group" aria-label="HTML Tags">
-                  <button type="button" class="btn btn-outline-secondary" onclick="insertTag('i')">[i]</button>
-                  <button type="button" class="btn btn-outline-secondary" onclick="insertTag('strong')">[strong]</button>
-                  <button type="button" class="btn btn-outline-secondary" onclick="insertTag('code')">[code]</button>
-                  <button type="button" class="btn btn-outline-secondary" onclick="insertTag('a', true)">[a]</button>
-                </div>
+              <div class="btn-group mb-3" role="group" aria-label="HTML Tags">
+                <button type="button" class="btn btn-outline-secondary">[i]</button>
+                <button type="button" class="btn btn-outline-secondary">[strong]</button>
+                <button type="button" class="btn btn-outline-secondary">[code]</button>
+                <button type="button" class="btn btn-outline-secondary">[a]</button>
+              </div>
               {{ form.as_p }}
               <input type="hidden" id="parentId" name="parent_id" value="">
               <button type="submit" class="btn btn-primary">Добавить комментарий</button>

@@ -5,6 +5,7 @@ from django.http import HttpResponseRedirect, JsonResponse
 from django.shortcuts import get_object_or_404, redirect
 from django.template.loader import render_to_string
 from django.urls import reverse, reverse_lazy
+from django.views import View
 from django.views.generic import DeleteView, DetailView, FormView, ListView
 from posts.forms import AddCommentForm, AddPostForm
 
@@ -104,109 +105,72 @@ class CreatePostView(LoginRequiredMixin, FormView):
 
 
 class AddCommentToPostView(LoginRequiredMixin, FormView):
-    form_class = AddCommentForm
-    template_name = 'posts/add_comment.html'
 
-    def get_form_kwargs(self):
-        kwargs = super().get_form_kwargs()
-        kwargs['initial'] = {'user': self.request.user}
-        return kwargs
+    def post(self, request, *args, **kwargs):
+        post_id = self.kwargs['post_id']
+        post = get_object_or_404(Post, pk=post_id)
+        form = AddCommentForm(request.POST, initial={'user': request.user})
 
+        if form.is_valid():
+            comment = form.save(commit=False)
+            comment.post = post
+            comment.user = request.user
+            comment.url = form.cleaned_data["home_page"]
+            comment.body = form.cleaned_data["text"]
+            comment.image = form.cleaned_data["image"]
+            comment.file = form.cleaned_data["file"]
+            comment.save()
 
-    def form_valid(self, form):
-        post = get_object_or_404(Post, pk=self.kwargs['post_id'])
+            return JsonResponse({
+                'success': True,
+                'user': str(request.user),
+                'comment': comment.body,
+                'created_at': comment.created_at.strftime('%Y-%m-%d %H:%M:%S'),
+            })
 
-        Comment.objects.create(
-            post=post,
-            user=self.request.user,
-            url=form.cleaned_data['home_page'],
-            body=form.cleaned_data['text'],
-            image=form.cleaned_data['image'],
-            file=form.cleaned_data['file']
-        )
-
-        if self.request.headers.get('x-requested-with') == 'XMLHttpRequest':
-            comments = Comment.objects.filter(post=post, parent__isnull=True).order_by('created_at')
-            html = render_to_string('posts/comments_list.html', {'comments': comments}, request=self.request)
-            return JsonResponse({'html': html})
-
-        messages.success(self.request, 'Ваш комментарий был добавлен успешно.')
-        return redirect(reverse('posts:post_detail', args=[post.id]))
-
-
-    def form_invalid(self, form):
-        if self.request.headers.get('x-requested-with') == 'XMLHttpRequest':
-            data = {'form': form.errors}
-            for field, errors in form.errors.items():
-                for error in errors:
-                    messages.error(self.request, f'{error}')
-            return JsonResponse(data, status=400)
-        else:
-            return self.render_to_response(self.get_context_data(form=form))
-
-
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
-        post_id = self.kwargs.get('post_id')
-        context['post'] = Post.objects.get(pk=post_id)
-        context['title'] = 'Оставить комментарий'
-        return context
+        errors = {field: errors for field, errors in form.errors.items()}
+        return JsonResponse({'success': False, 'errors': errors}, status=400)
     
 
 
 class AddCommentToCommentView(LoginRequiredMixin, FormView):
-    form_class = AddCommentForm
-    template_name = 'posts/add_comment.html'
 
-    def get_form_kwargs(self):
-        kwargs = super().get_form_kwargs()
-        kwargs['initial'] = {'user': self.request.user}
-        return kwargs
-
-
-    def form_valid(self, form):
+    def post(self, request, *args, **kwargs):
         post = get_object_or_404(Post, pk=self.kwargs['post_id'])
         parent_comment = get_object_or_404(Comment, pk=self.kwargs['comment_id'])
+        form = AddCommentForm(request.POST, initial={'user': request.user})
 
-        Comment.objects.create(
-            post=post,
-            user=self.request.user,
-            url=form.cleaned_data['home_page'],
-            body=form.cleaned_data['text'],
-            image=form.cleaned_data['image'],
-            file=form.cleaned_data['file'],
-            parent=parent_comment
-        )
+        if form.is_valid():
+            comment = form.save(commit=False)
+            comment.post = post
+            comment.user = request.user
+            comment.url = form.cleaned_data["home_page"]
+            comment.body = form.cleaned_data["text"]
+            comment.image = form.cleaned_data["image"]
+            comment.file = form.cleaned_data["file"]
+            comment.parent = parent_comment
+            comment.save()
 
-        if self.request.headers.get('x-requested-with') == 'XMLHttpRequest':
-            comments = Comment.objects.filter(post=post, parent__isnull=True).order_by('created_at')
-            html = render_to_string('posts/comments_list.html', {'comments': comments}, request=self.request)
-            return JsonResponse({'html': html})
-
-        messages.success(self.request, 'Ваш комментарий был добавлен успешно.')
-        return redirect(reverse('posts:post_detail', args=[post.id]))
-
-
-    def form_invalid(self, form):
-        if self.request.headers.get('x-requested-with') == 'XMLHttpRequest':
-            data = {'form': form.errors}
-            for field, errors in form.errors.items():
-                for error in errors:
-                    messages.error(self.request, f'{error}')
-            return JsonResponse(data, status=400)
-        else:
-            return self.render_to_response(self.get_context_data(form=form))
+            return JsonResponse({
+                'success': True,
+                'user': str(request.user),
+                'comment': comment.body,
+                'created_at': comment.created_at.strftime('%Y-%m-%d %H:%M:%S'),
+            })
 
 
+        errors = {field: errors for field, errors in form.errors.items()}
+        return JsonResponse({'success': False, 'errors': errors}, status=400)
+
+    
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         post_id = self.kwargs.get('post_id')
         comment_id = self.kwargs.get('comment_id')
 
-        context['post'] = Post.objects.get(pk=post_id)
-        context['comment'] = Comment.objects.get(pk=comment_id)
-        context['title'] = 'Добавить комментарий'
-
+        context['post'] = get_object_or_404(Post, pk=post_id)
+        context['comment'] = get_object_or_404(Comment, pk=comment_id)
+        context['title'] = 'Ответить на комментарий'
         return context
 
 
