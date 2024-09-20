@@ -1,6 +1,6 @@
 {% load static %}
 
-<!-- Модальное окно -->
+
 <div class="modal fade" id="commentModal" tabindex="-1" aria-labelledby="commentModalLabel" aria-hidden="true">
   <div class="modal-dialog">
     <div class="modal-content">
@@ -11,13 +11,43 @@
       <div class="modal-body">
           <form id="commentForm" method="post" enctype="multipart/form-data">
               {% csrf_token %}
+              <div class="mb-3">
+                {{ form.user_name.label_tag }}
+                {{ form.user_name }}
+              </div>
+              <div class="mb-3">
+                {{ form.email.label_tag }}
+                {{ form.email }}
+              </div>
+              <div class="mb-3">
+                {{ form.home_page.label_tag }}
+                {{ form.home_page }}
+              </div>
+    
               <div class="btn-group mb-3" role="group" aria-label="HTML Tags">
                 <button type="button" class="btn btn-outline-secondary">[i]</button>
                 <button type="button" class="btn btn-outline-secondary">[strong]</button>
                 <button type="button" class="btn btn-outline-secondary">[code]</button>
                 <button type="button" class="btn btn-outline-secondary">[a]</button>
               </div>
-              {{ form.as_p }}
+    
+              <div class="mb-3">
+                {{ form.text.label_tag }}
+                {{ form.text }}
+              </div>
+              <div class="mb-3">
+                {{ form.image.label_tag }}
+                {{ form.image }}
+              </div>
+              <div class="mb-3">
+                {{ form.file.label_tag }}
+                {{ form.file }}
+              </div>
+    
+              <div class="mb-3">
+                {{ form.captcha.label_tag }}
+                {{ form.captcha }}
+              </div>
               <input type="hidden" id="parentId" name="parent_id" value="">
               <button type="submit" class="btn btn-primary">Добавить комментарий</button>
           </form>
