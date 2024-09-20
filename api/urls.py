@@ -5,7 +5,7 @@ from api import views
 from api.token_view import AddUsernameTokenObtainPairView
 
 
-app_name = 'api'
+app_name = "api"
 
 router = routers.DefaultRouter()
 router.register(prefix=r"posts", viewset=views.PostsViewset, basename="post")
