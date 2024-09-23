@@ -1,10 +1,10 @@
 from django.contrib import messages
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 from django.core.paginator import Paginator
+from django.core.cache import cache
 from django.http import HttpResponseRedirect, JsonResponse
 from django.shortcuts import get_object_or_404, redirect
 from django.urls import reverse, reverse_lazy
-from django.views import View
 from django.views.generic import DeleteView, DetailView, FormView, ListView
 from posts.forms import AddCommentForm, AddPostForm
 
@@ -19,26 +19,32 @@ class MainView(ListView):
     paginate_by = 3
     allow_empty = True
 
+
     def get_queryset(self):
         order_by = self.request.GET.get("order_by")
         query = self.request.GET.get("q")
+        cache_key = f"posts_{order_by}_{query}"
 
-        if query:
-            posts = search_posts(query)
-        else:
-            posts = super().get_queryset()
+        posts = cache.get(cache_key)
+        if posts is None:
+            if query:
+                posts = search_posts(query)
+            else:
+                posts = super().get_queryset()
 
-        if order_by:
-            if order_by == "username":
-                posts = posts.order_by("user__username")
-            elif order_by == "email":
-                posts = posts.order_by("user__email")
-            elif order_by == "news":
-                posts = posts.order_by("-created_at")
-            elif order_by == "oldest":
-                posts = posts.order_by("created_at")
+            if order_by:
+                if order_by == "username":
+                    posts = posts.order_by("user__username")
+                elif order_by == "email":
+                    posts = posts.order_by("user__email")
+                elif order_by == "news":
+                    posts = posts.order_by("-created_at")
+                elif order_by == "oldest":
+                    posts = posts.order_by("created_at")
 
+            cache.set(cache_key, posts, 60 * 15)
         return posts
+
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -65,6 +71,7 @@ class PostsView(DetailView):
         context['page_obj'] = page_obj
         context["title"] = "Комментарии"
         context['form'] = AddCommentForm()
+        context['messages'] = messages.get_messages(self.request)
         return context
 
 
@@ -108,7 +115,7 @@ class AddCommentToPostView(LoginRequiredMixin, FormView):
     def post(self, request, *args, **kwargs):
         post_id = self.kwargs['post_id']
         post = get_object_or_404(Post, pk=post_id)
-        form = AddCommentForm(request.POST, initial={'user': request.user})
+        form = AddCommentForm(request.POST, request.FILES, initial={'user': request.user})
 
         if form.is_valid():
             comment = form.save(commit=False)
@@ -116,10 +123,11 @@ class AddCommentToPostView(LoginRequiredMixin, FormView):
             comment.user = request.user
             comment.url = form.cleaned_data["home_page"]
             comment.body = form.cleaned_data["text"]
-            comment.image = form.cleaned_data["image"]
-            comment.file = form.cleaned_data["file"]
+            comment.image = form.cleaned_data.get("image") 
+            comment.file = form.cleaned_data.get("file")
             comment.save()
 
+            messages.success(request, 'Ваш комментарий добавлен.')
             return JsonResponse({
                 'success': True,
                 'user': str(request.user),
@@ -137,7 +145,7 @@ class AddCommentToCommentView(LoginRequiredMixin, FormView):
     def post(self, request, *args, **kwargs):
         post = get_object_or_404(Post, pk=self.kwargs['post_id'])
         parent_comment = get_object_or_404(Comment, pk=self.kwargs['comment_id'])
-        form = AddCommentForm(request.POST, initial={'user': request.user})
+        form = AddCommentForm(request.POST, request.FILES, initial={'user': request.user})
 
         if form.is_valid():
             comment = form.save(commit=False)
@@ -145,11 +153,12 @@ class AddCommentToCommentView(LoginRequiredMixin, FormView):
             comment.user = request.user
             comment.url = form.cleaned_data["home_page"]
             comment.body = form.cleaned_data["text"]
-            comment.image = form.cleaned_data["image"]
-            comment.file = form.cleaned_data["file"]
+            comment.image = form.cleaned_data.get("image") 
+            comment.file = form.cleaned_data.get("file")
             comment.parent = parent_comment
             comment.save()
 
+            messages.success(request, 'Ваш комментарий добавлен.')
             return JsonResponse({
                 'success': True,
                 'user': str(request.user),

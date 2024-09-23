@@ -10,7 +10,7 @@ $(document).ready(function () {
 
     // Открытие модального окна для комментариев или ответов
     function openCommentModal(postId, commentId = '', formAction = '') {
-        document.getElementById('parentId').value = commentId;  // Заполняем скрытое поле parentId
+        document.getElementById('parentId').value = commentId;
         var form = document.getElementById('commentForm');
         
         // Устанавливаем action для формы
@@ -44,19 +44,39 @@ $(document).ready(function () {
         });
     });
 
-
+    // Обработчики для превью
     $('#preview-comment').on('click', function() {
-        // Получаем данные из формы
         let userName = $('#id_user_name').val();
         let email = $('#id_email').val();
         let commentText = $('#id_body').val();
 
-        // Устанавливаем эти данные в модальное окно для предпросмотра
         $('#preview-username').text(userName);
         $('#preview-email').text(email);
         $('#preview-comment-body').html(commentText);
 
-        // Открываем модальное окно
+        const imageInput = $('#id_image')[0];
+        const fileInput = $('#id_file')[0];
+        const imagePreview = $('#preview-image');
+        const filePreview = $('#preview-file');
+
+        if (imageInput.files.length > 0) {
+            const imageFile = imageInput.files[0];
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                imagePreview.attr('src', e.target.result).show();
+            };
+            reader.readAsDataURL(imageFile);
+        } else {
+            imagePreview.hide();
+        }
+
+        if (fileInput.files.length > 0) {
+            const file = fileInput.files[0];
+            filePreview.attr('href', URL.createObjectURL(file)).show();
+        } else {
+            filePreview.hide();
+        }
+
         $('#previewModal').modal('show');
     });
 
@@ -102,18 +122,20 @@ $(document).ready(function () {
 
     // AJAX отправка формы комментария
     $('#commentForm').on('submit', function(event) {
-        event.preventDefault();  // Останавливаем стандартное поведение формы
+        event.preventDefault();
 
         if (!validateForm()) {
-            return;  // Если форма не валидна, не отправляем её
+            return;
         }
 
-        let formData = $(this).serialize();  // Собираем данные формы
+        let formData = new FormData(this);
 
         $.ajax({
-            url: $(this).attr('action'),  // URL для отправки данных формы
+            url: $(this).attr('action'),
             type: 'POST',
             data: formData,
+            contentType: false,
+            processData: false,
             success: function(response) {
                 if (response.success) {
                     window.location.reload();
@@ -121,7 +143,6 @@ $(document).ready(function () {
             },
             error: function(xhr) {
                 if (xhr.responseJSON && xhr.responseJSON.errors) {
-                    // Отображаем ошибки из ответа
                     let errorMessages = 'Ошибки:\n';
                     for (let field in xhr.responseJSON.errors) {
                         errorMessages += `${xhr.responseJSON.errors[field].join(', ')}\n`;
@@ -130,9 +151,9 @@ $(document).ready(function () {
             
                     // Обновляем капчу
                     $.get('/captcha/refresh/', function(data) {
-                        $('.captcha').attr('src', data.image_url + '?t=' + new Date().getTime());  // Обновляем изображение капчи
-                        $('#id_captcha_0').val(data.key);  // Обновляем ключ капчи
-                        $('#id_captcha_1').val('');  // Очищаем поле для ввода капчи
+                        $('.captcha').attr('src', data.image_url + '?t=' + new Date().getTime());
+                        $('#id_captcha_0').val(data.key);
+                        $('#id_captcha_1').val('');
                     });
                 } else {
                     alert('Произошла ошибка при отправке формы. Пожалуйста, попробуйте еще раз.');
@@ -177,7 +198,7 @@ $(document).ready(function () {
 
     // Привязываем событие к кнопкам
     $('.btn-group button').on('click', function() {
-        var tag = $(this).text().replace(/\[(.*?)\]/, '$1');  // Извлекаем тег из текста кнопки
+        var tag = $(this).text().replace(/\[(.*?)\]/, '$1');
         var isLink = tag === 'a';
         insertTag(tag, isLink);
     });
