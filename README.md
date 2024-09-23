@@ -255,3 +255,4 @@ sudo systemctl restart nginx
 ### Лицензия
 
 Проект распространяется под лицензией MIT.
+
