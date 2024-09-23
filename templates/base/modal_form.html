@@ -50,7 +50,11 @@
               </div>
               <input type="hidden" id="parentId" name="parent_id" value="">
               <button type="submit" class="btn btn-primary">Добавить комментарий</button>
+
+              <button type="button" id="preview-comment" class="btn btn-info">Предпросмотр</button>
+              <button type="submit" class="btn btn-primary">Отправить</button>
           </form>
+          {% include "base/preview_form.html" %}
         <div class="error-message"></div>  </div>
     </div>
   </div>

@@ -44,9 +44,69 @@ $(document).ready(function () {
         });
     });
 
+
+    $('#preview-comment').on('click', function() {
+        // Получаем данные из формы
+        let userName = $('#id_user_name').val();
+        let email = $('#id_email').val();
+        let commentText = $('#id_body').val();
+
+        // Устанавливаем эти данные в модальное окно для предпросмотра
+        $('#preview-username').text(userName);
+        $('#preview-email').text(email);
+        $('#preview-comment-body').html(commentText);
+
+        // Открываем модальное окно
+        $('#previewModal').modal('show');
+    });
+
+
+    // Валидация полей перед отправкой формы
+    function validateForm() {
+        let isValid = true;
+        let errorMessages = '';
+
+        let userName = $('#id_user_name').val();
+        if (!userName) {
+            isValid = false;
+            errorMessages += 'Имя пользователя не должно быть пустым.\n';
+        } else if (userName.length < 3) {
+            isValid = false;
+            errorMessages += 'Имя пользователя должно быть длиннее 3 символов.\n';
+        }
+
+        let email = $('#id_email').val();
+        if (!email || !validateEmail(email)) {
+            isValid = false;
+            errorMessages += 'Введите корректный email.\n';
+        }
+
+        let commentText = $('#id_body').val();
+        if (!commentText) {
+            isValid = false;
+            errorMessages += 'Текст комментария не должен быть пустым.\n';
+        }
+
+        if (!isValid) {
+            alert(errorMessages);
+        }
+
+        return isValid;
+    }
+
+    // Валидация email
+    function validateEmail(email) {
+        const re = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        return re.test(String(email).toLowerCase());
+    }
+
     // AJAX отправка формы комментария
     $('#commentForm').on('submit', function(event) {
         event.preventDefault();  // Останавливаем стандартное поведение формы
+
+        if (!validateForm()) {
+            return;  // Если форма не валидна, не отправляем её
+        }
 
         let formData = $(this).serialize();  // Собираем данные формы
 
@@ -55,11 +115,7 @@ $(document).ready(function () {
             type: 'POST',
             data: formData,
             success: function(response) {
-                console.log(response);  // Выводим весь ответ сервера для отладки
-    
                 if (response.success) {
-                    // Очищаем форму
-                    $('#commentForm')[0].reset();
                     window.location.reload();
                 }
             },
@@ -109,7 +165,7 @@ $(document).ready(function () {
             var url = prompt("Введите URL ссылки:", "https://");
             var title = prompt("Введите Title для ссылки:", "");
             if (url) {
-                var tagContent = `<a href="${url}" title="${title}">текст ссылки</a>`;
+                var tagContent = `<a href="${url}" title="${title}">${title}</a>`;
                 textarea.value = text.substring(0, start) + tagContent + text.substring(end);
             }
         } else {
