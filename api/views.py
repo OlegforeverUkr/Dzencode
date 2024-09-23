@@ -1,3 +1,4 @@
+from django.core.cache import cache
 from rest_framework import viewsets
 from rest_framework.decorators import action
 from rest_framework.permissions import IsAuthenticated, AllowAny
@@ -26,15 +27,36 @@ class PostsViewset(viewsets.ModelViewSet):
             return [AllowAny()]
         return [IsAuthenticated(), IsOwnerOrAdmin()]
 
+
     def perform_create(self, serializer):
         serializer.save(user=self.request.user)
 
 
+    def list(self, request, *args, **kwargs):
+        cache_key = "posts_list"
+        posts = cache.get(cache_key)
+
+        if posts is None:
+            response = super().list(request, *args, **kwargs)
+            posts = response.data
+            cache.set(cache_key, posts, 60 * 5)
+            return response
+        else:
+            return Response(posts)
+
+
     @action(methods=["get"], detail=False, permission_classes=[AllowAny])
     def comments(self, request):
-        comments = Comment.objects.all()
-        serializer = CustomCommentsSerializer(comments, many=True)
-        return Response({"comments": serializer.data})
+        cache_key = "comments_list"
+        comments = cache.get(cache_key)
+
+        if comments is None:
+            comments = Comment.objects.all()
+            serializer = CustomCommentsSerializer(comments, many=True)
+            cache.set(cache_key, serializer.data, 60 * 5)
+            return Response({"comments": serializer.data})
+        else:
+            return Response({"comments": comments})
 
 
 class CommentViewset(viewsets.ModelViewSet):

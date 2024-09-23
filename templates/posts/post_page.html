@@ -5,7 +5,9 @@
 {% block content %}
     <div class="post-detail">
         <h1>{{ post.title }}</h1>
-        <p>{{ post.body }}</p>
+        {% autoescape off %}
+            <p>{{ post.body }}</p>
+        {% endautoescape %}
         <strong>Автор: {{ post.user.username }}</strong>
         <p>{{ post.user.email }}</p>
         <p>Создан: {{ post.created_at|date:"H:i d.m.y" }}</p>
@@ -33,7 +35,9 @@
         {% for comment in page_obj %}
             {% include 'posts/comment.html' with comment=comment level=0 %}
         {% endfor %}
+        
 
+        {% include "base/notifications.html" %}
         {% include "base/comment_paginator.html" %}
         {% include "base/modal_form.html" %}
         {% include "base/modal_foto.html" %}
