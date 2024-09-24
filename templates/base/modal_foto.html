@@ -9,11 +9,7 @@
             <div class="modal-body">
                 <div id="lightbox-gallery">
                     {% for comment in page_obj %}
-                        {% if comment.image %}
-                            <a href="{{ comment.image.url }}" data-lightbox="comment-images" data-title="Комментарий от {{ comment.user.username }}">
-                                <img src="{{ comment.image.url }}" alt="Комментарий от {{ comment.user.username }}" class="img-thumbnail">
-                            </a>
-                        {% endif %}
+                    {% include 'posts/comment_image.html' with comment=comment %}
                     {% endfor %}
                 </div>
             </div>

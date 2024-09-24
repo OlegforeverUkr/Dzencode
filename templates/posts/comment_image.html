@@ -1,0 +1,11 @@
+{% if comment.image %}
+    <a href="{{ comment.image.url }}" data-lightbox="comment-images" data-title="Комментарий от {{ comment.user.username }}">
+        <img src="{{ comment.image.url }}" alt="Комментарий от {{ comment.user.username }}" class="img-thumbnail" style="margin: 5px;">
+    </a>
+{% endif %}
+
+{% if comment.replies %}
+    {% for child_comment in comment.replies.all %}
+        {% include 'posts/comment_image.html' with comment=child_comment %}
+    {% endfor %}
+{% endif %}
